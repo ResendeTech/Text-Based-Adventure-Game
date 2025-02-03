@@ -87,50 +87,40 @@ def armor_inventory_screen():
                 print(f"{slots[i]}: Empty")
             else:
                 print(f"{slots[i]}: {inventory[item].name}")
-        # for i, item in enumerate(armor_inventory):
-        #     if item is None:
-        #         print(f"Slot: Empty")
-        #     elif isinstance(item, Armor):
-        #         print(f"Armor: {inventory[item].name}")
-        #     elif isinstance(item, Weapons):
-        #         print(f"Weapon: {inventory[item].name}")
-        #     elif isinstance(item, Trinkets):
-                
-        #         print(f"Trinket {i + 1}: {inventory[item].name}")
         print(92 * "-")
-        print("type 'help' for instructions for the inventory system")
+        print("type 'help' for instructions for the armor inventory system")
         print('\n')
 
 inventory = [None] * 10
 armor_inventory = [None, None, None, None]
 
 def check_armor_inventory():
-    slots = ["Armor", "Weapon", "Trinket 1", "Trinket 2"]
+    global isInArmor
     while True:
-            action = input("You are in the armor inventory menu, Enter the slot number (1-4) ").strip().lower()
-            if action.isdigit():
-                action = int(action) - 1
-                if  0 <= action < len(armor_inventory):
-                    if  armor_inventory[action] is not None:
-                        print(f"item selected is: {armor_inventory[action].name}")
+        action = input("You are in the armor inventory menu, Enter the slot number (1-4) ").strip().lower()
+        if action.isdigit():
+            action = int(action) - 1
+            if  0 <= action < len(armor_inventory):
+                if  armor_inventory[action] is not None:
+                    item = inventory[armor_inventory[action]]
+                    if hasattr(item, 'name'):
+                        print(f"item selected is: {item.name}")
                         slot = action
                         slot = int(slot)
+
                         Item_selected(int(slot))
-                    else: 
-                        print("This slot is empty")
-                else:
-                    print("invalid slot")
-            elif action == "help":
-                Help()
-            elif action == "exit" or action == "quit" or action == "exit inventory" or action == "leave":
-                return
-            elif action == "inventory" or action == "show inventory" or action == "open inventory":
-                inventory_screen()
-            elif action == "armor inventory" or action == "armor" or action == "armory" or action == "show armor" or action == "open armor":
-                armor_inventory_screen()
-
-
-
+                    else:
+                        print ("It doesnt fucking workkk")
+                else: 
+                    print("This slot is empty")
+            else:
+                print("invalid slot")
+        elif action == "help":
+            Help()
+        elif action == "exit" or action == "quit" or action == "exit inventory" or action == "leave":
+            return
+        elif action == "inventory" or action == "show inventory" or action == "open inventory":
+            check_inventory()
 
 def check_inventory():
     global help_checked
@@ -159,6 +149,7 @@ def check_inventory():
             inventory_screen()
         elif action == "armor inventory" or action == "armor" or action == "armory" or action == "show armor" or action == "open armor":
             armor_inventory_screen()
+            check_armor_inventory()
 
         else:
             print("Invalid input")
