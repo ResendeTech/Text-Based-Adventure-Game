@@ -32,6 +32,7 @@ def Help():
     print ("You are in the inventory menu. You can select items by typing its slot number (1-10)")
     print("typing 'use' to use or equip an item and typing 'check' to check an item.")
     print("Type'remove' or 'rm' to remove an item from your inventory.")
+    print("Or if you are in the armor inventory, then 'remove' moves it out of the armor inventory and into the normal inventory")
     print ("You can type 'exit' to leave the inventory menu, or 'back' to unselect an item and go to the inventory menu")
     print("You can also type 'invetory' or 'show' to re open the inventory slots")
     print("-" * 92)
@@ -39,18 +40,25 @@ def Help():
     check_inventory()
 
 def Item_selected(slot):
+    item = inventory[slot]
     while True:
-        action = input(f"Choose an action: ").strip().lower()
+        action = input("Choose an action: ").strip().lower()
         if action == "check":
-            print(inventory[slot])
+            print(item)
         elif action == "remove" or action == "rm":
-            remove_item(int(slot))
-            break
+            if item.isInArmorInv:
+                remove_armor_item(slot)
+                break
+            else:
+                remove_item(slot)
+                break
         elif action == "use":
-            use_item(int(slot))
-            break
+            if item.isInArmorInv:
+                print("Item is already equipped")
+            else:
+                use_item(slot)
+                break
         elif action == "back":
-            #check_inventory()
             break
         else:
             print("Invalid action. Type 'check', 'remove', 'use', or 'back'.")
@@ -85,6 +93,8 @@ def armor_inventory_screen():
         for i, item in enumerate(armor_inventory):
             if item is None:
                 print(f"{slots[i]}: Empty")
+            elif inventory[item] is None:
+                print(f"{slots[i]}: Empty")
             else:
                 print(f"{slots[i]}: {inventory[item].name}")
         print(92 * "-")
@@ -95,7 +105,6 @@ inventory = [None] * 10
 armor_inventory = [None, None, None, None]
 
 def check_armor_inventory():
-    global isInArmor
     while True:
         action = input("You are in the armor inventory menu, Enter the slot number (1-4) ").strip().lower()
         if action.isdigit():
@@ -105,12 +114,10 @@ def check_armor_inventory():
                     item = inventory[armor_inventory[action]]
                     if hasattr(item, 'name'):
                         print(f"item selected is: {item.name}")
-                        slot = action
-                        slot = int(slot)
-
-                        Item_selected(int(slot))
+                        item.isInArmorInv = True
+                        Item_selected(armor_inventory[action])
                     else:
-                        print ("It doesnt fucking workkk")
+                        print("aughhthhth why life is pain")
                 else: 
                     print("This slot is empty")
             else:
@@ -119,8 +126,10 @@ def check_armor_inventory():
             Help()
         elif action == "exit" or action == "quit" or action == "exit inventory" or action == "leave":
             return
-        elif action == "inventory" or action == "show inventory" or action == "open inventory":
+        elif action == "inventory" or action == "show inventory" or action == "open inventory" or action == "inv":
             check_inventory()
+        elif action == "armor" or action == "armor inventory" or action == "open":
+            armor_inventory_screen()
 
 def check_inventory():
     global help_checked
@@ -145,7 +154,7 @@ def check_inventory():
             Help()
         elif action == "exit" or action == "quit" or action == "exit inventory" or action == "leave":
             return
-        elif action == "inventory" or action == "show inventory" or action == "open inventory":
+        elif action == "inventory" or action == "show inventory" or action == "open inventory" or action == "inv":
             inventory_screen()
         elif action == "armor inventory" or action == "armor" or action == "armory" or action == "show armor" or action == "open armor":
             armor_inventory_screen()
@@ -162,13 +171,14 @@ def check_inventory():
     # To do this, the implementation of a while loop might be needed
 
 class Item:
-    def __init__(self, name, description, stats, effects, equippable, Class):
+    def __init__(self, name, description, stats, effects, equippable, Class, isInArmorInv):
         self.name = name
         self.description = description
         self.stats = stats
         self.effects = effects
         self.equippable = equippable
         self.Class = Class
+        self.isInArmorInv = isInArmorInv
 
     def __str__(self):    
         if isinstance(self, Armor):
@@ -214,25 +224,30 @@ def add_item(item):
     print("Inventory is full")
 
 def add_to_armor_inventory(slot):
-    if inventory[slot].Class == Armor:
+    item = inventory[slot]
+    if item.Class == Armor:
         if armor_inventory[0] is None:
             armor_inventory[0] = slot
-            print(f"Added {inventory[slot].name} to armor slot")
+            inventory[slot] = None
+            print(f"Added {item.name} to armor slot")
         else:
             print("Armor slot is already occupied")
-    elif inventory[slot].Class == Weapons:
+    elif item.Class == Weapons:
         if armor_inventory[1] is None:
             armor_inventory[1] = slot
-            print(f"Added {inventory[slot].name} to weapon slot")
+            inventory[slot] = None
+            print(f"Added {item.name} to weapon slot")
         else:
             print("Weapon slot is already occupied")
-    elif inventory[slot].Class == Trinkets:
+    elif item.Class == Trinkets:
         if armor_inventory[2] is None:
             armor_inventory[2] = slot
-            print(f"Added {slot.name} to trinket slot 1")
+            inventory[slot] = None
+            print(f"Added {item.name} to trinket slot 1")
         elif armor_inventory[3] is None:
             armor_inventory[3] = slot
-            print(f"Added {slot.name} to trinket slot 2")
+            inventory[slot] = None
+            print(f"Added {item.name} to trinket slot 2")
         else:
             print("Both trinket slots are already occupied")
     else:
@@ -244,7 +259,6 @@ def remove_item(slot):
     if 0 <= slot < len(inventory):
         if inventory[slot] is not None:
             item_name = inventory[slot].name
-            inventory[slot] = None
             print(f"Removed {item_name} from inventory")
         else:
             print("inventory slot is already empty")
@@ -252,18 +266,22 @@ def remove_item(slot):
         print("Invalid inventory slot")
 
 def use_item(slot):
-    if inventory[slot].stats is not None:
-        if inventory[slot].equippable is True:
+    item = inventory[slot]
+    if item.stats is not None:
+        if item.equippable is True:
             add_to_armor_inventory(slot)
-            #remove_item(slot)
-            
-            # make an armor inventory
-            # add the equippaable item to its specific location in the armor inventory
-            # remove the item from this inventory
         else:
             print("not so skibidi")
     else:
         print("no stats")
+        
+def remove_armor_item(slot):
+    item = inventory[slot]
+    if item.isInArmorInv is True:
+        item.isInArmorInv = False
+        armor_inventory[armor_inventory.index(slot)] = None
+        inventory[slot] = item
+        print(f"Removed {item.name} from armor inventory")
 
 class Trinkets(Item):
     pass
@@ -273,16 +291,16 @@ def add_trinket(trinket):
     add_item(trinket)
 
 class Weapons(Item):
-    def __init__(self, name, description, damage, special_effects, equippable, Class):
-        super().__init__(name, description, damage, special_effects, equippable, Class)
+    def __init__(self, name, description, damage, special_effects, equippable, Class, isInArmorInv):
+        super().__init__(name, description, damage, special_effects, equippable, Class, isInArmorInv)
 
 
 def add_weapon(weapon):
     add_item(weapon)
 
 class Armor(Item):
-    def __init__(self, name, description, damage, special_effects, equippable, Class):
-        super().__init__(name, description, damage, special_effects, equippable, Class)
+    def __init__(self, name, description, damage, special_effects, equippable, Class, isInArmorInv):
+        super().__init__(name, description, damage, special_effects, equippable, Class, isInArmorInv)
 
 
 def add_armor(armor):
@@ -294,7 +312,8 @@ trumpet = Item(
     None,
     "trumpet sound.mp3",
     False,
-    Class=Item
+    Class=Item,
+    isInArmorInv=False,
 )
 epic_sword_of_death = Weapons(
     'Epic sword of death',
@@ -303,6 +322,7 @@ epic_sword_of_death = Weapons(
     "idkkk it does killy thing",
     True,
     Class=Weapons,
+    isInArmorInv = False,
 )
 super_armor = Armor(
     "Super armor",
@@ -311,6 +331,7 @@ super_armor = Armor(
     "superly defends against everything",
     True,
     Class=Armor,
+    isInArmorInv = False,
 )
 supa_armor = Armor(
     "Supa armor",
@@ -318,7 +339,8 @@ supa_armor = Armor(
     5,
     "supaly defends against everything",
     True,
-    Class=Armor
+    Class=Armor,
+    isInArmorInv=False,
 )
 
 
