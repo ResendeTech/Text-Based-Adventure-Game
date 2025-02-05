@@ -118,17 +118,6 @@ def armor_inventory_screen():
                 print(f"{slots[i]}: Empty")
             else:
                 print(f"{slots[i]}: {item.name}")
-        # for i, item_index in enumerate(armor_inventory):
-        #     if item_index is None:
-        #         print(f"{slots[i]}: Empty")
-        #     # elif inventory[item] is None:
-        #     #     print(f"{slots[i]}: Empty")
-        #     else:
-        #         item = inventory[item_index]
-        #         if item is None:
-        #             print(f"{slots[i]}: Empty")
-        #         else:
-        #             print(f"{slots[i]}: {item.name}")
         print(92 * "-")
         print("type 'help' for instructions for the armor inventory system")
         print('\n')
@@ -260,24 +249,48 @@ def add_to_armor_inventory(slot):
     if isinstance(item, Armor):
         if armor_inventory[0] is None:
             armor_inventory[0] = item
+            player_stats["df"] += item.stats
             inventory[slot] = None
             print(f"Added {item.name} to armor slot")
+            print("Defense is now:" + player_stats["df"])
         else:
             print("Armor slot is already occupied")
     elif isinstance(item, Weapons):
         if armor_inventory[1] is None:
             armor_inventory[1] = item
+            player_stats["at"] += item.stats
             inventory[slot] = None
             print(f"Added {item.name} to weapon slot")
+            print("Attack damage is now:" + player_stats["at"])
         else:
             print("Weapon slot is already occupied")
     elif isinstance(item, Trinkets):
         if armor_inventory[2] is None:
             armor_inventory[2] = item
+            if item.max_hp is not None:
+                player_stats["max_hp"] += item.max_hp
+            elif item.at is not None:
+                player_stats["at"] += item.at
+            elif item.df is not None:
+                player_stats["df"] += item.df
+            elif item.max_mp is not None:
+                player_stats["max_mp"] += item.max_mp
+            else:
+                print("idk how to do xp multiplier one yet")
             inventory[slot] = None
             print(f"Added {item.name} to trinket slot 1")
         elif armor_inventory[3] is None:
             armor_inventory[3] = item
+            if item.max_hp is not None:
+                player_stats["max_hp"] += item.max_hp
+            elif item.at is not None:
+                player_stats["at"] += item.at
+            elif item.df is not None:
+                player_stats["df"] += item.df
+            elif item.max_mp is not None:
+                player_stats["max_mp"] += item.max_mp
+            else:
+                print("idk how to do xp multiplier one yet")
             inventory[slot] = None
             print(f"Added {item.name} to trinket slot 2")
         else:
@@ -317,7 +330,8 @@ def remove_armor_item(slot):
         print(f"Removed {item.name} from armor inventory")
 
 class Trinkets(Item):
-    pass
+    def __init__(self, name, description, max_hp, at, df, max_mp, xp_multiplier, effects, equippable, Class, isInArmorInv):
+        super().__init__(name, description, max_hp, at, df, max_mp, xp_multiplier, effects, equippable, Class, isInArmorInv)
 
 
 def add_trinket(trinket):
@@ -332,8 +346,8 @@ def add_weapon(weapon):
     add_item(weapon)
 
 class Armor(Item):
-    def __init__(self, name, description, damage, special_effects, equippable, Class, isInArmorInv):
-        super().__init__(name, description, damage, special_effects, equippable, Class, isInArmorInv)
+    def __init__(self, name, description, defense, special_effects, equippable, Class, isInArmorInv):
+        super().__init__(name, description, defense, special_effects, equippable, Class, isInArmorInv)
 
 
 def add_armor(armor):
@@ -376,11 +390,40 @@ supa_armor = Armor(
     isInArmorInv=False,
 )
 
+ring_of_power = Trinkets(
+    "Ring of Power",
+    "Powerful ring",
+    None,
+    6,
+    None,
+    None,
+    None,
+    "Gives soo much power",
+    True,
+    Class = Trinkets,
+    isInArmorInv=False,
+)
+
+ring_of_unpower = Trinkets(
+    "Ring of Unpower",
+    "Unpowerful ring",
+    10,
+    None,
+    5,
+    None,
+    None,
+    "Gives soo little power, boosts defense instead",
+    True,
+    Class = Trinkets,
+    isInArmorInv=False,
+)
 
 add_weapon(epic_sword_of_death) 
 add_item(trumpet)
 add_armor(super_armor)
 add_armor(supa_armor)
+add_trinket(ring_of_power)
+add_trinket(ring_of_unpower)
 
 def delprint(e1, dell = 0.05): 
     global i

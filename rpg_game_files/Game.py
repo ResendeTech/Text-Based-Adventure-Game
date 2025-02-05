@@ -60,8 +60,6 @@ def quit_game():
     elif action.lower() == 'n':
         print("You have chosen to continue playing")
         return False
-    
-    
 
 
 #Player input system
