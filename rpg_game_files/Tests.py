@@ -64,6 +64,29 @@ def Item_selected(slot):
             print("Invalid action. Type 'check', 'remove', 'use', or 'back'.")
         # Make the connections to use an item or equip it
 
+def Item_selected_armor(item, armor_slot):
+    while True:
+        action = input("Choose an action: ").strip().lower()
+        if action == "check":
+            print(item)
+        elif action == "remove" or action == "rm":
+            # Find empty inventory slot
+            for i in range(len(inventory)):
+                if inventory[i] is None:
+                    inventory[i] = item
+                    armor_inventory[armor_slot] = None
+                    item.isInArmorInv = False
+                    print(f"Removed {item.name} from armor inventory")
+                    break
+            break
+        elif action == "use":
+            print("Item is already equipped")
+        elif action == "back":
+            break
+        else:
+            print("Invalid action. Type 'check', 'remove', 'use', or 'back'.")
+
+
 def inventory_screen():
         print('\n')
         print(92 * "-")
@@ -93,10 +116,19 @@ def armor_inventory_screen():
         for i, item in enumerate(armor_inventory):
             if item is None:
                 print(f"{slots[i]}: Empty")
-            elif inventory[item] is None:
-                print(f"{slots[i]}: Empty")
             else:
-                print(f"{slots[i]}: {inventory[item].name}")
+                print(f"{slots[i]}: {item.name}")
+        # for i, item_index in enumerate(armor_inventory):
+        #     if item_index is None:
+        #         print(f"{slots[i]}: Empty")
+        #     # elif inventory[item] is None:
+        #     #     print(f"{slots[i]}: Empty")
+        #     else:
+        #         item = inventory[item_index]
+        #         if item is None:
+        #             print(f"{slots[i]}: Empty")
+        #         else:
+        #             print(f"{slots[i]}: {item.name}")
         print(92 * "-")
         print("type 'help' for instructions for the armor inventory system")
         print('\n')
@@ -110,12 +142,12 @@ def check_armor_inventory():
         if action.isdigit():
             action = int(action) - 1
             if  0 <= action < len(armor_inventory):
-                if  armor_inventory[action] is not None:
-                    item = inventory[armor_inventory[action]]
+                item = armor_inventory[action]
+                if item is not None:
                     if hasattr(item, 'name'):
                         print(f"item selected is: {item.name}")
                         item.isInArmorInv = True
-                        Item_selected(armor_inventory[action])
+                        Item_selected_armor(item, action)
                     else:
                         print("aughhthhth why life is pain")
                 else: 
@@ -225,27 +257,27 @@ def add_item(item):
 
 def add_to_armor_inventory(slot):
     item = inventory[slot]
-    if item.Class == Armor:
+    if isinstance(item, Armor):
         if armor_inventory[0] is None:
-            armor_inventory[0] = slot
+            armor_inventory[0] = item
             inventory[slot] = None
             print(f"Added {item.name} to armor slot")
         else:
             print("Armor slot is already occupied")
-    elif item.Class == Weapons:
+    elif isinstance(item, Weapons):
         if armor_inventory[1] is None:
-            armor_inventory[1] = slot
+            armor_inventory[1] = item
             inventory[slot] = None
             print(f"Added {item.name} to weapon slot")
         else:
             print("Weapon slot is already occupied")
-    elif item.Class == Trinkets:
+    elif isinstance(item, Trinkets):
         if armor_inventory[2] is None:
-            armor_inventory[2] = slot
+            armor_inventory[2] = item
             inventory[slot] = None
             print(f"Added {item.name} to trinket slot 1")
         elif armor_inventory[3] is None:
-            armor_inventory[3] = slot
+            armor_inventory[3] = item
             inventory[slot] = None
             print(f"Added {item.name} to trinket slot 2")
         else:
@@ -259,6 +291,7 @@ def remove_item(slot):
     if 0 <= slot < len(inventory):
         if inventory[slot] is not None:
             item_name = inventory[slot].name
+            inventory[slot] = None
             print(f"Removed {item_name} from inventory")
         else:
             print("inventory slot is already empty")
