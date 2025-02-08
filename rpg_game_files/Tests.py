@@ -257,7 +257,7 @@ def add_to_armor_inventory(slot):
             player_stats["df"] += item.stats
             inventory[slot] = None
             print(f"Added {item.name} to armor slot")
-            print("Defense is now:" + player_stats["df"])
+            print("Defense is now: " + str(player_stats["df"]))
         else:
             print("Armor slot is already occupied")
     elif isinstance(item, Weapons):
@@ -266,7 +266,7 @@ def add_to_armor_inventory(slot):
             player_stats["at"] += item.stats
             inventory[slot] = None
             print(f"Added {item.name} to weapon slot")
-            print("Attack damage is now:" + player_stats["at"])
+            print("Attack damage is now: " + str(player_stats["at"]))
         else:
             print("Weapon slot is already occupied")
     elif isinstance(item, Trinkets):
@@ -335,24 +335,24 @@ def remove_armor_item(slot):
         print(f"Removed {item.name} from armor inventory")
 
 class Trinkets(Item):
-    def __init__(self, name, description, effects, equippable, Class, isInArmorInv):
-        super().__init__(name, description, effects, equippable, Class, isInArmorInv)
+    def __init__(self, name, description, effects, equippable, Class, isInArmorInv, max_hp=None, at=None, df=None, max_mp=None, xp_multiplier=None):
+        super().__init__(name, description, effects, equippable, Class, isInArmorInv, max_hp, at, df, max_mp, xp_multiplier)
 
 
 def add_trinket(trinket):
     add_item(trinket)
 
 class Weapons(Item):
-    def __init__(self, name, description, damage, special_effects, equippable, Class, isInArmorInv):
-        super().__init__(name, description, damage, special_effects, equippable, Class, isInArmorInv)
+    def __init__(self, name, description, damage, special_effects, equippable, Class, isInArmorInv, max_hp=None, at=None, df=None, max_mp=None, xp_multiplier=None):
+        super().__init__(name, description, damage, special_effects, equippable, Class, isInArmorInv, max_hp, at, df, max_mp, xp_multiplier)
 
 
 def add_weapon(weapon):
     add_item(weapon)
 
 class Armor(Item):
-    def __init__(self, name, description, defense, special_effects, equippable, Class, isInArmorInv):
-        super().__init__(name, description, defense, special_effects, equippable, Class, isInArmorInv)
+    def __init__(self, name, description, defense, special_effects, equippable, Class, isInArmorInv, max_hp=None, at=None, df=None, max_mp=None, xp_multiplier=None):
+        super().__init__(name, description, defense, special_effects, equippable, Class, isInArmorInv, max_hp, at, df, max_mp, xp_multiplier)
 
 
 def add_armor(armor):
