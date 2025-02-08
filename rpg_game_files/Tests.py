@@ -46,15 +46,11 @@ def Item_selected(slot):
         if action == "check":
             print(item)
         elif action == "remove" or action == "rm":
-            if item.isInArmorInv:
-                remove_armor_item(slot)
-                break
-            else:
-                remove_item(slot)
-                break
+            remove_item(slot)
+            break
         elif action == "use":
-            if item.isInArmorInv:
-                print("Item is already equipped")
+            if item.isInArmorInv == True:
+                print("Item slot is already equipped")
             else:
                 use_item(slot)
                 break
@@ -318,13 +314,11 @@ def remove_item(slot):
 
 def use_item(slot):
     item = inventory[slot]
-    if item.stats is not None:
-        if item.equippable is True:
-            add_to_armor_inventory(slot)
-        else:
-            print("not so skibidi")
+    if item.equippable is True and (isinstance(item, (Armor, Weapons, Trinkets))):
+        add_to_armor_inventory(slot)
     else:
-        print("no stats")
+        print(item.name + " is not able to be equipped")
+
         
 def remove_armor_item(slot):
     item = inventory[slot]
@@ -335,8 +329,8 @@ def remove_armor_item(slot):
         print(f"Removed {item.name} from armor inventory")
 
 class Trinkets(Item):
-    def __init__(self, name, description, effects, equippable, Class, isInArmorInv, max_hp=None, at=None, df=None, max_mp=None, xp_multiplier=None):
-        super().__init__(name, description, effects, equippable, Class, isInArmorInv, max_hp, at, df, max_mp, xp_multiplier)
+    def __init__(self, name, description, stats, effects, equippable, Class, isInArmorInv, max_hp=None, at=None, df=None, max_mp=None, xp_multiplier=None):
+        super().__init__(name, description, None, effects, equippable, Class, isInArmorInv, max_hp, at, df, max_mp, xp_multiplier)
 
 
 def add_trinket(trinket):
@@ -398,8 +392,9 @@ supa_armor = Armor(
 ring_of_power = Trinkets(
     "Ring of Power",
     "Powerful ring",
+    None,
     "Gives soo much power",
-    True,
+    equippable = True,
     Class = Trinkets,
     isInArmorInv=False,
     max_hp=None,
@@ -412,8 +407,9 @@ ring_of_power = Trinkets(
 ring_of_unpower = Trinkets(
     "Ring of Unpower",
     "Unpowerful ring",
+    None,
     "Gives soo little power, boosts defense instead",
-    True,
+    equippable = True,
     Class = Trinkets,
     isInArmorInv=False,
     max_hp=10,
