@@ -192,7 +192,7 @@ def check_inventory():
     # To do this, the implementation of a while loop might be needed
 
 class Item:
-    def __init__(self, name, description, stats, effects, equippable, Class, isInArmorInv):
+    def __init__(self, name, description, stats, effects, equippable, Class, isInArmorInv, max_hp=None, at=None, df=None, max_mp=None, xp_multiplier=None):
         self.name = name
         self.description = description
         self.stats = stats
@@ -200,6 +200,11 @@ class Item:
         self.equippable = equippable
         self.Class = Class
         self.isInArmorInv = isInArmorInv
+        self.max_hp = max_hp
+        self.at = at
+        self.df = df
+        self.max_mp = max_mp
+        self.xp_multiplier = xp_multiplier
 
     def __str__(self):    
         if isinstance(self, Armor):
@@ -330,8 +335,8 @@ def remove_armor_item(slot):
         print(f"Removed {item.name} from armor inventory")
 
 class Trinkets(Item):
-    def __init__(self, name, description, max_hp, at, df, max_mp, xp_multiplier, effects, equippable, Class, isInArmorInv):
-        super().__init__(name, description, max_hp, at, df, max_mp, xp_multiplier, effects, equippable, Class, isInArmorInv)
+    def __init__(self, name, description, effects, equippable, Class, isInArmorInv):
+        super().__init__(name, description, effects, equippable, Class, isInArmorInv)
 
 
 def add_trinket(trinket):
@@ -393,29 +398,29 @@ supa_armor = Armor(
 ring_of_power = Trinkets(
     "Ring of Power",
     "Powerful ring",
-    None,
-    6,
-    None,
-    None,
-    None,
     "Gives soo much power",
     True,
     Class = Trinkets,
     isInArmorInv=False,
+    max_hp=None,
+    at=7,
+    df=None,
+    max_mp=None,
+    xp_multiplier=None,
 )
 
 ring_of_unpower = Trinkets(
     "Ring of Unpower",
     "Unpowerful ring",
-    10,
-    None,
-    5,
-    None,
-    None,
     "Gives soo little power, boosts defense instead",
     True,
     Class = Trinkets,
     isInArmorInv=False,
+    max_hp=10,
+    at=None,
+    df=5,
+    max_mp=None,
+    xp_multiplier=None,
 )
 
 add_weapon(epic_sword_of_death) 
