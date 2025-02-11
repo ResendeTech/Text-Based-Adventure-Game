@@ -188,7 +188,7 @@ def check_inventory():
     # To do this, the implementation of a while loop might be needed
 
 class Item:
-    def __init__(self, name, description, stats, effects, equippable, Class, isInArmorInv, max_hp=None, at=None, df=None, max_mp=None, xp_multiplier=None):
+    def __init__(self, name, description, stats=None, effects=None, equippable=False, Class=None, isInArmorInv=False, max_hp=None, at=None, df=None, max_mp=None, xp_multiplier=None, hp=None, mp=None):
         self.name = name
         self.description = description
         self.stats = stats
@@ -201,6 +201,8 @@ class Item:
         self.df = df
         self.max_mp = max_mp
         self.xp_multiplier = xp_multiplier
+        self.hp = hp
+        self.mp = mp
 
     def __str__(self):    
         if isinstance(self, Armor):
@@ -250,7 +252,7 @@ def add_to_armor_inventory(slot):
     if isinstance(item, Armor):
         if armor_inventory[0] is None:
             armor_inventory[0] = item
-            player_stats["df"] += item.stats
+            player_stats["df"] += item.df
             inventory[slot] = None
             print(f"Added {item.name} to armor slot")
             print("Defense is now: " + str(player_stats["df"]))
@@ -259,7 +261,7 @@ def add_to_armor_inventory(slot):
     elif isinstance(item, Weapons):
         if armor_inventory[1] is None:
             armor_inventory[1] = item
-            player_stats["at"] += item.stats
+            player_stats["at"] += item.at
             inventory[slot] = None
             print(f"Added {item.name} to weapon slot")
             print("Attack damage is now: " + str(player_stats["at"]))
@@ -316,6 +318,25 @@ def use_item(slot):
     item = inventory[slot]
     if item.equippable is True and (isinstance(item, (Armor, Weapons, Trinkets))):
         add_to_armor_inventory(slot)
+    elif isinstance(item, Item):
+        match True:
+            case _ if item.hp is not None:
+                player_stats["hp"] += item.hp
+                if player_stats["hp"] > player_stats["max_hp"]:
+                    player_stats["hp"] = player_stats["max_hp"]
+                    print (item.name + " was used, HP is maxed out")
+                else:
+                    print (item.name + " was used, HP is increased by " + item.hp)
+                inventory[slot] = None
+            case _ if item.mp is not None:
+                player_stats["mp"] += item.mp
+                if player_stats["mp"] > player_stats["max_mp"]:
+                    player_stats["mp"] = player_stats["max_mp"]
+                    print (item.name + "was used, MP is maxed out")
+                else:
+                    print (item.name + "was used, MP is increased")
+                inventory[slot] = None
+    
     else:
         print(item.name + " is not able to be equipped")
 
@@ -419,12 +440,22 @@ ring_of_unpower = Trinkets(
     xp_multiplier=None,
 )
 
+mini_health_potion = Item(
+    "Mini Health potion",
+    "A very mini little guy, but he packs a mean health punch!",
+    effects="Heals 5 hp",
+    equippable=False,
+    Class=Item,
+    hp=5,
+)
+
 add_weapon(epic_sword_of_death) 
 add_item(trumpet)
 add_armor(super_armor)
 add_armor(supa_armor)
 add_trinket(ring_of_power)
 add_trinket(ring_of_unpower)
+add_item(mini_health_potion)
 
 def delprint(e1, dell = 0.05): 
     global i
