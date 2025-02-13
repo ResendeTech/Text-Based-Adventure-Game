@@ -18,6 +18,7 @@ player_stats = {
     'hp': 0,
     'max_hp': 0,
     'mp': 0,
+    'max_mp': 0,
     'xp': 0,
     'player_lv': 1,
     'character': None,
@@ -34,10 +35,22 @@ def Help():
     print("Type'remove' or 'rm' to remove an item from your inventory.")
     print("Or if you are in the armor inventory, then 'remove' moves it out of the armor inventory and into the normal inventory")
     print ("You can type 'exit' to leave the inventory menu, or 'back' to unselect an item and go to the inventory menu")
-    print("You can also type 'invetory' or 'show' to re open the inventory slots")
+    print("You can also type 'inventory' or 'show' to re open the inventory slots")
+    print("Typing 'armor' brings you to the armor inventory")
     print("-" * 92)
     help_checked = True
     check_inventory()
+
+def Armor_Help():
+    print("-" * 92)
+    print ("You are in the armor inventory menu. You can select the slots by typing its slot number (1-4)")
+    print("type 'check' to check the equipment's stats")
+    print("Type'remove' or 'rm' to remove an equipment from your armor inventory and put it back into the inventory.")
+    print("Or if you are in the armor inventory, then 'remove' moves it out of the armor inventory and into the normal inventory")
+    print ("You can type 'exit' to leave the armor inventory menu, or 'back' to unselect an item and go to the armor inventory menu")
+    print("You can also type 'armor' or 'show' to re open the inventory slots")
+    print("-" * 92)
+    check_armor_inventory()
 
 def Item_selected(slot):
     item = inventory[slot]
@@ -140,10 +153,10 @@ def check_armor_inventory():
             else:
                 print("invalid slot")
         elif action == "help":
-            Help()
+            Armor_Help()
         elif action == "exit" or action == "quit" or action == "exit inventory" or action == "leave":
             return
-        elif action == "inventory" or action == "show inventory" or action == "open inventory" or action == "inv":
+        elif action == "inventory" or action == "show inventory" or action == "open inventory" or action == "inv" or action == "show":
             check_inventory()
         elif action == "armor" or action == "armor inventory" or action == "open":
             armor_inventory_screen()
