@@ -24,9 +24,12 @@ player_stats = {
     'character': None,
     'max_xp': 10,
 }
-
+# Inventory variables
 help_checked = False
+inventory = [None] * 10
+armor_inventory = [None, None, None, None]
 
+#Help functions
 def Help():
     global help_checked
     print("-" * 92)
@@ -52,6 +55,7 @@ def Armor_Help():
     print("-" * 92)
     check_armor_inventory()
 
+#Item selected functions
 def Item_selected(slot):
     item = inventory[slot]
     while True:
@@ -95,7 +99,7 @@ def Item_selected_armor(item, armor_slot):
         else:
             print("Invalid action. Type 'check', 'remove', 'use', or 'back'.")
 
-
+# Inventory screens
 def inventory_screen():
         print('\n')
         print(92 * "-")
@@ -131,9 +135,7 @@ def armor_inventory_screen():
         print("type 'help' for instructions for the armor inventory system")
         print('\n')
 
-inventory = [None] * 10
-armor_inventory = [None, None, None, None]
-
+# Check inventory functions
 def check_armor_inventory():
     while True:
         action = input("You are in the armor inventory menu, Enter the slot number (1-4) ").strip().lower()
@@ -189,7 +191,6 @@ def check_inventory():
         elif action == "armor inventory" or action == "armor" or action == "armory" or action == "show armor" or action == "open armor":
             armor_inventory_screen()
             check_armor_inventory()
-
         else:
             print("Invalid input")
 
@@ -200,6 +201,8 @@ def check_inventory():
     # this method will be used for the use and drop features as well
     # To do this, the implementation of a while loop might be needed
 
+
+#Classes
 class Item:
     def __init__(self, name, description, stats=None, effects=None, equippable=False, Class=None, isInArmorInv=False, max_hp=None, at=None, df=None, max_mp=None, xp_multiplier=None, hp=None, mp=None):
         self.name = name
@@ -244,14 +247,25 @@ class Item:
                 return f"""{self.name}: 
                 Description: {self.description} 
                 Stats: {self.stats} 
-                Effects: {self.effects}
-                Equippable: {self.equippable}"""
+                Effects: {self.effects}"""
             else:
                 return f"""{self.name}: 
                 Description: {self.description} 
-                Effects: {self.effects}
-                Equippable: {self.equippable}"""
+                Effects: {self.effects}"""
             
+class Trinkets(Item):
+    def __init__(self, name, description, stats, effects, equippable, Class, isInArmorInv, max_hp=None, at=None, df=None, max_mp=None, xp_multiplier=None):
+        super().__init__(name, description, None, effects, equippable, Class, isInArmorInv, max_hp, at, df, max_mp, xp_multiplier)
+
+class Weapons(Item):
+    def __init__(self, name, description, damage, special_effects, equippable, Class, isInArmorInv, max_hp=None, at=None, df=None, max_mp=None, xp_multiplier=None):
+        super().__init__(name, description, damage, special_effects, equippable, Class, isInArmorInv, max_hp, at, df, max_mp, xp_multiplier)
+
+class Armor(Item):
+    def __init__(self, name, description, defense, special_effects, equippable, Class, isInArmorInv, max_hp=None, at=None, df=None, max_mp=None, xp_multiplier=None):
+        super().__init__(name, description, defense, special_effects, equippable, Class, isInArmorInv, max_hp, at, df, max_mp, xp_multiplier)
+
+#Add to- functions         
 def add_item(item):
     for i in range(len(inventory)):
         if inventory[i] is None:
@@ -314,8 +328,7 @@ def add_to_armor_inventory(slot):
     else:
         print("Invalid item type for armor inventory")
 
-
-
+#Remove item functions
 def remove_item(slot):
     if 0 <= slot < len(inventory):
         if inventory[slot] is not None:
@@ -327,6 +340,15 @@ def remove_item(slot):
     else:        
         print("Invalid inventory slot")
 
+def remove_armor_item(slot):
+    item = inventory[slot]
+    if item.isInArmorInv is True:
+        item.isInArmorInv = False
+        armor_inventory[armor_inventory.index(slot)] = None
+        inventory[slot] = item
+        print(f"Removed {item.name} from armor inventory")
+
+#Use function
 def use_item(slot):
     item = inventory[slot]
     if item.equippable is True and (isinstance(item, (Armor, Weapons, Trinkets))):
@@ -353,39 +375,17 @@ def use_item(slot):
     else:
         print(item.name + " is not able to be equipped")
 
-        
-def remove_armor_item(slot):
-    item = inventory[slot]
-    if item.isInArmorInv is True:
-        item.isInArmorInv = False
-        armor_inventory[armor_inventory.index(slot)] = None
-        inventory[slot] = item
-        print(f"Removed {item.name} from armor inventory")
-
-class Trinkets(Item):
-    def __init__(self, name, description, stats, effects, equippable, Class, isInArmorInv, max_hp=None, at=None, df=None, max_mp=None, xp_multiplier=None):
-        super().__init__(name, description, None, effects, equippable, Class, isInArmorInv, max_hp, at, df, max_mp, xp_multiplier)
-
-
+#Add specific items functions
 def add_trinket(trinket):
     add_item(trinket)
-
-class Weapons(Item):
-    def __init__(self, name, description, damage, special_effects, equippable, Class, isInArmorInv, max_hp=None, at=None, df=None, max_mp=None, xp_multiplier=None):
-        super().__init__(name, description, damage, special_effects, equippable, Class, isInArmorInv, max_hp, at, df, max_mp, xp_multiplier)
-
 
 def add_weapon(weapon):
     add_item(weapon)
 
-class Armor(Item):
-    def __init__(self, name, description, defense, special_effects, equippable, Class, isInArmorInv, max_hp=None, at=None, df=None, max_mp=None, xp_multiplier=None):
-        super().__init__(name, description, defense, special_effects, equippable, Class, isInArmorInv, max_hp, at, df, max_mp, xp_multiplier)
-
-
 def add_armor(armor):
     add_item(armor)
 
+#Item objects
 trumpet = Item(
     "Trumpet",
     "Makes a Funny toot sound!",

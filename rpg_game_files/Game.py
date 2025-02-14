@@ -17,6 +17,7 @@ player_stats = {
     'df': 0,
     'hp': 0,
     'max_hp': 0,
+    'max_mp': 0,
     'mp': 0,
     'xp': 0,
     'player_lv': 1,
@@ -240,7 +241,7 @@ def enter_shop():
       # Potions for kinda miscellaneous magic item effects and healing/boosting mana and maybe health
       # Foods for healing/temporary stat bonuses
       # item accessories that you can equip that you gives you permanent stat upgrade when you have it on
-      # When implemeneting equipables, another inventory array needs to made to differentiate between normal items and equipables
+      # When implemeneting equippables, another inventory array needs to made to differentiate between normal items and equipables
        # To specify, equipable items can go into the normal inventory array, however normal items cannot go into equipable invotory array
       # The stats from the armor should be able to be differentiated when the player checks their stats
       # by putting a "(+armor number)" next to the original stat
