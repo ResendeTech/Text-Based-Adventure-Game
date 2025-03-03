@@ -37,14 +37,14 @@ slime_stats = {
 guard_stats = {
     "guard_at": random.randint(3, 5),
     "guard_hp": 12,
-    "piercing_strike": 7,
+    "piercing_strike": random.radint(7, 9),
     "armor": 3,
 }
 #Enraged guard stats
 enraged_guard_stats = {
     "guard_at": random.randint(3, 6),
     "guard_hp": 14,
-    "piercing_strike": 9,
+    "piercing_strike": random.randint(9, 11),
     "armor": 3,
 }
 
@@ -58,7 +58,7 @@ def quit_game():
     if action.lower() == 'y':
         print("you have quit the game")
         exit()
-    elif action.lower() == 'n':
+    elif action.lower().strip() == 'n' or action.lower().strip() == "no":
         print("You have chosen to continue playing")
         return False
 
@@ -111,8 +111,8 @@ def stats():
     print ("Character role: ", player_stats['Character'])
     print ("Attack damage: ", int(player_stats['at']))
     print ("Defense: ", player_stats['df'])
-    print ("Health: ", player_stats['hp'])
-    print ("Magic: ", player_stats['mp'])
+    print ("Health: ", player_stats['hp'], "/", player_stats["max_hp"])
+    print ("Magic: ", player_stats['mp'], "/", player_stats["max_mp"])
     print ("Player level: ", player_stats['player_lv'])
     print ("player's current xp: ", player_stats['xp'])
     print ("XP needed to level up: ", int(player_stats['max_xp']))
@@ -123,27 +123,24 @@ def stats():
 # Level up system
 def lv_up():
     player_stats['player_lv'] += 1
-    player_stats['at'] += 2
-    player_stats['df'] += 2
-    player_stats['max_hp'] += 4
+    player_stats['at'] += player_stats["player_lv"] + random.randint(1, 3)
+    player_stats['max_hp'] += player_stats["player_lv"] + random.randint (1, 4)
     if player_stats['xp'] >= player_stats['max_xp']:
         player_stats['xp'] -= player_stats['max_xp']
     elif player_stats['xp'] == player_stats['max_xp']:
         player_stats['xp'] = 0 
     player_stats['max_xp'] *= 1.5
-    player_stats['hp'] = player_stats['max_hp']
+    player_stats['hp'] += player_stats['max_hp'] / 4
     print ("You are now level: ", player_stats['player_lv'])
     print("YOU LEVELED UP!!! Your stats were increased and recovered to max health.")
 
 # Player_turn system
-
 def player_turn():
     print('\n')
     print("-" * 92)
     print("Your intention to absolutely demolish the slime frightens the poor fellow, as you swing your rake for the kill, you miss your attack, however, the sheer fright of the attack damaged the slime ")
         
     crit = random.randint(0, 4)
-
     if crit == 1:
         player_stats['at'] *= 2
         print("critical hit!")
@@ -234,7 +231,13 @@ def enter_shop():
      # And as well the ability to use the item
       # For using the item, there will probably be temporary boosts and one off time items
       # so having the variable for counting the turns necessary to calculate how long an item lasts
-    
+
+    #Inventory system is done, now after the fact, the store itself needs to have an inventory system that the player can see and choose an item and buy it
+    #But before that at all, the store should start off with options: Buy, Sell, talk and Exit.
+    #By typing and entering buy, you enter the store's inventory menu, which the items are selected by using a for loop and random number generator 
+    #After the item is randomly selected, then the inventory of the store is shown to the player where they can interact with it, like a normal inventory but the player can buy the item from the store with a certain price
+
+
     # Make a system where the player can peruse and choose and buy items 
      # For the store, the items available in the store should be separated in categories: 
       # make the money be taken away when you buy something and that items go into your inventory

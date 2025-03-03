@@ -28,6 +28,7 @@ player_stats = {
 help_checked = False
 inventory = [None] * 10
 armor_inventory = [None, None, None, None]
+Money = 0
 
 #Help functions
 def Help():
