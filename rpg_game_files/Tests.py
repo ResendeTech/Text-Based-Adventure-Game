@@ -404,6 +404,7 @@ epic_sword_of_death = Weapons(
     True,
     Class=Weapons,
     isInArmorInv = False,
+    at=1,
 )
 super_armor = Armor(
     "Super armor",
@@ -413,6 +414,7 @@ super_armor = Armor(
     True,
     Class=Armor,
     isInArmorInv = False,
+    df= 5,
 )
 supa_armor = Armor(
     "Supa armor",
@@ -422,6 +424,7 @@ supa_armor = Armor(
     True,
     Class=Armor,
     isInArmorInv=False,
+    df= 5,
 )
 
 ring_of_power = Trinkets(
